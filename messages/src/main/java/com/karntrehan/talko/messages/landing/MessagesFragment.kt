@@ -21,7 +21,7 @@ class MessagesFragment : BaseFragment() {
     @Inject
     lateinit var messagesVMF: MessagesVMF
 
-    val viewModel: MessagesVM by lazy { baseVM as MessagesVM }
+    private val viewModel: MessagesVM by lazy { baseVM as MessagesVM }
 
     //Pagination
     private lateinit var endlessScrollListener: EndlessScrollListener
@@ -33,15 +33,28 @@ class MessagesFragment : BaseFragment() {
 
     override fun provideViewModelFactory() = messagesVMF
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        MessagesDH.messagesComponent.inject(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        observeMessages()
+
+        viewModel.messages()
 
         endlessScrollListener = initEndlessScroll()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        MessagesDH.messagesComponent.inject(this)
+    private fun observeMessages() {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        rvMessages.addOnScrollListener(endlessScrollListener)
     }
 
     private fun initEndlessScroll() = object : EndlessScrollListener(
@@ -51,7 +64,7 @@ class MessagesFragment : BaseFragment() {
         //This will be called each time the user scrolls
         // and only 2 elements are left in the recyclerview items.
         override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-            //viewModel.loadNextPage()
+            viewModel.loadNextMessages()
         }
     }
 

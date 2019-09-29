@@ -1,7 +1,9 @@
 package com.karntrehan.talko.messages.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
+import com.google.gson.Gson
 import com.karntrehan.talko.messages.db.MessagesDatabase
 import com.karntrehan.talko.messages.landing.MessagesContract
 import com.karntrehan.talko.messages.landing.MessagesRepo
@@ -18,8 +20,11 @@ class MessagesModule {
 
     @MessagesScope
     @Provides
-    fun messagesContract(database: MessagesDatabase): MessagesContract.Repo =
-        MessagesRepo(database.messagesDao())
+    fun messagesRepo(
+        preferences: SharedPreferences,
+        gson: Gson,
+        database: MessagesDatabase
+    ): MessagesContract.Repo = MessagesRepo(preferences,gson,database.messagesDao())
 
     @MessagesScope
     @Provides
