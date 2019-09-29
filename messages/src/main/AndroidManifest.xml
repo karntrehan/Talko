@@ -4,8 +4,7 @@
     package="com.karntrehan.talko.messages">
 
     <dist:module
-        dist:instant="false"
-        dist:onDemand="false"
+        dist:instant="true"
         dist:title="@string/title_messages">
         <dist:delivery>
             <dist:install-time />
