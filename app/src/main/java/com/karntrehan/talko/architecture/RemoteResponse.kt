@@ -1,4 +1,4 @@
-package com.karntrehan.architecture
+package com.karntrehan.talko.architecture
 
 import com.google.gson.annotations.SerializedName
 

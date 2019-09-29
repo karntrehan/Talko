@@ -1,12 +1,12 @@
-package com.karntrehan.dependencies
+package com.karntrehan.talko.dependencies
 
 import android.content.Context
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.karntrehan.BuildConfig
-import com.karntrehan.architecture.Exclude
+import com.karntrehan.talko.BuildConfig
+import com.karntrehan.talko.architecture.Exclude
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache

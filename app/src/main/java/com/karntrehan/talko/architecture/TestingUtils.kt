@@ -1,4 +1,4 @@
-package com.karntrehan.architecture
+package com.karntrehan.talko.architecture
 
 import android.annotation.SuppressLint
 import androidx.annotation.VisibleForTesting

@@ -1,4 +1,4 @@
-package com.karntrehan.architecture
+package com.karntrehan.talko.architecture
 
 /**
  * Fields annotated with @Exclude will not be parsed in retrofit network requests

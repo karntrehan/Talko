@@ -1,10 +1,10 @@
-package com.karntrehan.architecture
+package com.karntrehan.talko.architecture
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.karntrehan.extensions.hide
+import com.karntrehan.talko.extensions.hide
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -1,19 +1,10 @@
-# Agni
-Android app template for modular apps with Dagger 2, Coroutines, LiveData, ViewModel and RxJava 2.
+# Talko
 
 # Contains
 * **[Dagger 2](https://dagger.dev/)**: Dependency injection
 * **[Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)**: Async.
 * **[Reactive streams](https://github.com/ReactiveX/RxJava)**: Networking & Async.
 * **[LiveData and ViewModel](https://developer.android.com/topic/libraries/architecture)**: Isolate business logic and maintain state.
-
-# Usage
-* `app` module is where the application initializes 
-* Create a dynamic module like **[characters](https://github.com/karntrehan/Starwars/blob/master/characters/build.gradle)**. 
-* Add the module's navigation to `NavigationExtension`
-
-# Contribution
-Feel free to open an issue or submit a pull request with improvements.
 
 # Licence
     MIT License

@@ -1,4 +1,4 @@
-package com.karntrehan.dependencies
+package com.karntrehan.talko.dependencies
 
 import android.content.Context
 import android.content.SharedPreferences

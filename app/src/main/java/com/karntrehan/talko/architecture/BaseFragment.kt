@@ -1,4 +1,4 @@
-package com.karntrehan.architecture
+package com.karntrehan.talko.architecture
 
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import com.karntrehan.R
+import com.karntrehan.talko.R
 import java.net.UnknownHostException
 
 
