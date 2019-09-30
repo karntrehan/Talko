@@ -1,5 +1,6 @@
 package com.karntrehan.talko.messages.landing
 
+import com.karntrehan.talko.messages.db.tables.Attachment
 import com.karntrehan.talko.messages.db.tables.Message
 import com.karntrehan.talko.messages.db.tables.User
 import io.reactivex.Single
@@ -14,5 +15,6 @@ interface MessagesContract {
         fun messages(limit: Int, offset: Int): Single<List<Message>>
         fun currentUserId(): Int
         fun user(userId: Int): User?
+        fun attachments(messageId: Int): List<Attachment>?
     }
 }

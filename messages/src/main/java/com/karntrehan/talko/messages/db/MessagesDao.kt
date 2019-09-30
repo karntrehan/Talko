@@ -28,4 +28,7 @@ interface MessagesDao {
 
     @Query("SELECT * FROM USERS WHERE id = :userId LIMIT 1")
     fun user(userId: Int): User
+
+    @Query("SELECT * FROM ATTACHMENTS WHERE message_id = :messageId")
+    fun attachments(messageId: Int): List<Attachment>?
 }

@@ -48,6 +48,8 @@ class MessagesRepo(
 
     override fun user(userId: Int): User? = dao.user(userId)
 
+    override fun attachments(messageId: Int) = dao.attachments(messageId)
+
     private fun saveUsers(
         messagesAndUser: MessagesAndUsersJsonModel,
         disposable: CompositeDisposable

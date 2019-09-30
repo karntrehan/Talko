@@ -11,6 +11,7 @@ import com.karntrehan.talko.extensions.EndlessScrollListener
 import com.karntrehan.talko.messages.R
 import com.karntrehan.talko.messages.di.MessagesDH
 import com.karntrehan.talko.messages.landing.adapter.MessagesAdapter
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.messages_fragment.*
 import javax.inject.Inject
 
@@ -22,10 +23,12 @@ class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
 
     @Inject
     lateinit var messagesVMF: MessagesVMF
+    @Inject
+    lateinit var picasso: Picasso
 
     private val viewModel: MessagesVM by lazy { baseVM as MessagesVM }
 
-    private val adapter: MessagesAdapter by lazy { MessagesAdapter(this) }
+    private val adapter: MessagesAdapter by lazy { MessagesAdapter(picasso, this) }
 
     //Pagination
     private lateinit var endlessScrollListener: EndlessScrollListener

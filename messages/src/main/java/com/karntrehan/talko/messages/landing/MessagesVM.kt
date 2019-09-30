@@ -7,10 +7,7 @@ import com.karntrehan.talko.architecture.BaseVM
 import com.karntrehan.talko.extensions.hide
 import com.karntrehan.talko.extensions.show
 import com.karntrehan.talko.messages.db.tables.Message
-import com.karntrehan.talko.messages.landing.models.ReceivedMessage
-import com.karntrehan.talko.messages.landing.models.ReceivedName
-import com.karntrehan.talko.messages.landing.models.SentMessage
-import com.karntrehan.talko.messages.landing.models.SentName
+import com.karntrehan.talko.messages.landing.models.*
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
@@ -46,8 +43,8 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
             .observeOn(Schedulers.computation())
             .map { addUsersToMessages(it) }
             .subscribe({
-                Log.d(TAG, "getLocalMessages: $it")
                 _loading.hide()
+                Log.d(TAG, "getLocalMessages: $it")
                 _messages.postValue(it)
             }, { handleError(it) })
             .addTo(disposable)
@@ -62,17 +59,33 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
                 if (prevUserId != currentUserId)
                     result.add(SentName())
                 result.add(SentMessage(message.content))
+                addSelfAttachments(message.id, result)
             } else if (message.userId == prevUserId) {
                 result.add(ReceivedMessage(message.content))
+                addReceivedAttachments(message.id, result)
             } else {
                 repo.user(message.userId)?.let { currentUser ->
+                    prevUserId = currentUser.id
                     result.add(ReceivedName(currentUser.name))
                     result.add(ReceivedMessage(message.content, currentUser.avatarId))
+                    addReceivedAttachments(message.id, result)
                 }
             }
         }
 
         return result
+    }
+
+    private fun addSelfAttachments(messageId: Int, result: MutableList<Any>) {
+        repo.attachments(messageId)
+            ?.map { SentAttachment(it.thumbnailUrl, it.title) }
+            ?.let { result.addAll(it) }
+    }
+
+    private fun addReceivedAttachments(messageId: Int, result: MutableList<Any>) {
+        repo.attachments(messageId)
+            ?.map { ReceivedAttachment(it.thumbnailUrl, it.title) }
+            ?.let { result.addAll(it) }
     }
 
     fun loadNextMessages() {
