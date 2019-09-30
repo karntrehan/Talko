@@ -70,6 +70,8 @@ dependencies {
     api ui.material
     api ui.picasso
     api ui.picassoOkHttp
+    api ui.adapterDelegate
+    api ui.adapDelLayoutContainer
 
     //rx
     api rx.java

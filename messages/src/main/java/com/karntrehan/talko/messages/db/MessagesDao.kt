@@ -25,4 +25,7 @@ interface MessagesDao {
     /*Queries*/
     @Query("SELECT * FROM MESSAGES LIMIT :limit OFFSET :offset")
     fun messages(limit: Int, offset: Int): Single<List<Message>>
+
+    @Query("SELECT * FROM USERS WHERE id = :userId LIMIT 1")
+    fun user(userId: Int): User
 }

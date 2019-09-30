@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="sender_avatar">Sender Avatar</string>
+    <string name="me">Me</string>
 </resources>

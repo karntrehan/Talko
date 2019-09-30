@@ -3,16 +3,18 @@ package com.karntrehan.talko.messages.landing
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.karntrehan.talko.architecture.BaseFragment
 import com.karntrehan.talko.extensions.EndlessScrollListener
 import com.karntrehan.talko.messages.R
 import com.karntrehan.talko.messages.di.MessagesDH
+import com.karntrehan.talko.messages.landing.adapter.MessagesAdapter
 import kotlinx.android.synthetic.main.messages_fragment.*
 import javax.inject.Inject
 
-class MessagesFragment : BaseFragment() {
+class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
 
     override val layout = R.layout.messages_fragment
 
@@ -22,6 +24,8 @@ class MessagesFragment : BaseFragment() {
     lateinit var messagesVMF: MessagesVMF
 
     private val viewModel: MessagesVM by lazy { baseVM as MessagesVM }
+
+    private val adapter: MessagesAdapter by lazy { MessagesAdapter(this) }
 
     //Pagination
     private lateinit var endlessScrollListener: EndlessScrollListener
@@ -45,11 +49,15 @@ class MessagesFragment : BaseFragment() {
 
         viewModel.messages()
 
+        rvMessages.adapter = adapter
+
         endlessScrollListener = initEndlessScroll()
     }
 
     private fun observeMessages() {
-
+        viewModel.messages.observe(viewLifecycleOwner, Observer { messages ->
+            adapter.items = messages
+        })
     }
 
     override fun onResume() {
@@ -59,7 +67,7 @@ class MessagesFragment : BaseFragment() {
 
     private fun initEndlessScroll() = object : EndlessScrollListener(
         layoutManager = rvMessages.layoutManager as LinearLayoutManager,
-        visibleThreshold = 1
+        visibleThreshold = 2
     ) {
         //This will be called each time the user scrolls
         // and only 2 elements are left in the recyclerview items.

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
 import com.karntrehan.talko.messages.db.MessagesDao
+import com.karntrehan.talko.messages.db.tables.User
 import com.karntrehan.talko.messages.landing.models.MessagesAndUsersJsonModel
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
@@ -42,6 +43,10 @@ class MessagesRepo(
     }
 
     override fun messages(limit: Int, offset: Int) = dao.messages(limit, offset)
+
+    override fun currentUserId() = 1
+
+    override fun user(userId: Int): User? = dao.user(userId)
 
     private fun saveUsers(
         messagesAndUser: MessagesAndUsersJsonModel,
