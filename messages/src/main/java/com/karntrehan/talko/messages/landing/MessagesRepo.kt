@@ -31,20 +31,23 @@ class MessagesRepo(
 
     override fun loadMessagesIntoMemory(disposable: CompositeDisposable): PublishSubject<Boolean> {
         val subject = PublishSubject.create<Boolean>()
-        Log.d(TAG, "First Load")
+
         val messagesAndUser = gson.fromJson(
             getResponseFromJson("messages"),
             MessagesAndUsersJsonModel::class.java
         )
         prefs.edit().putBoolean(FIRST_LOAD, false).apply()
+
         saveUsers(messagesAndUser, disposable, subject)
         saveNotifications(messagesAndUser, disposable, subject)
         saveAttachments(messagesAndUser, disposable, subject)
+
         return subject
     }
 
     override fun messages(limit: Int, offset: Int) = dao.messages(limit, offset)
 
+    //This would in real life come from a sharedpref, file or db system
     override fun currentUserId() = 1
 
     override fun user(userId: Int): User? = dao.user(userId)
@@ -61,6 +64,7 @@ class MessagesRepo(
         subject: PublishSubject<Boolean>
     ) {
         Maybe.just(messagesAndUser.users)
+            //User single thread when writing to the db
             .subscribeOn(Schedulers.single())
             .map { dao.insertUsers(it) }
             .doOnError { subject.onError(it) }
@@ -74,6 +78,7 @@ class MessagesRepo(
         subject: PublishSubject<Boolean>
     ) {
         Maybe.just(messagesAndUser.messages)
+            //User single thread when writing to the db
             .subscribeOn(Schedulers.single())
             .map { dao.insertMessages(it) }
             .doOnError { subject.onError(it) }
@@ -87,11 +92,13 @@ class MessagesRepo(
         subject: PublishSubject<Boolean>
     ) {
         Maybe.just(messagesAndUser.messages)
+            //User single thread when writing to the db
             .subscribeOn(Schedulers.single())
             .doOnError { subject.onError(it) }
             .map {
                 it.forEach { message ->
                     message.attachments?.forEach { attachment ->
+                        //Pass msg id to the attachment
                         attachment.messageId = message.id
                         dao.insertAttachments(attachment)
                     }

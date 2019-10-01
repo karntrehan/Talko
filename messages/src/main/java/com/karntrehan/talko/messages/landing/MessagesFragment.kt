@@ -30,17 +30,17 @@ class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
 
     override val vmClass = MessagesVM::class.java
 
-    @Inject
-    lateinit var messagesVMF: MessagesVMF
-    @Inject
-    lateinit var picasso: Picasso
-
     private val viewModel: MessagesVM by lazy { baseVM as MessagesVM }
 
     private val adapter: MessagesAdapter by lazy { MessagesAdapter(picasso, this) }
 
-    //Pagination
     private lateinit var endlessScrollListener: EndlessScrollListener
+
+    @Inject
+    lateinit var messagesVMF: MessagesVMF
+
+    @Inject
+    lateinit var picasso: Picasso
 
     companion object {
         const val TAG = "MessagesFragment"

@@ -33,4 +33,10 @@ class MessagesActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commitAllowingStateLoss()
     }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 1)
+            super.onBackPressed()
+        else finish()
+    }
 }

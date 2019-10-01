@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="*.karntrehan.com/agni"
+                    android:host="*.karntrehan.com/talko"
                     android:pathPrefix="/"
                     android:scheme="https" />
             </intent-filter>
