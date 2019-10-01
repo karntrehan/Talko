@@ -1,17 +1,19 @@
 # Talko
-A sample messaging UI app for Android writen in Kotlin.
+A sample messaging UI app for Android writen in Kotlin with a working local persistence layer.
 
 # Working
-![Working](app_flow.gif)
+![Working](app_flow.png =250x)
+Video demo can be seen [here](https://drive.google.com/file/d/11LWryPTnveaMwdqTQZu4HyY0GXpZHNf2/view?usp=sharing)
 
 # Architecture
-* MVVM with Observable pattern.
-* Modular supporting Instant App
+* MVVM with Observable pattern
+* A modular app with Instant Apps
 
 # Decisions
-* **Room vs Realm vs ObjectBox** - We needed a relational database that performed well with ReactiveExtensions. In the above combination, Room performs the best.
+* **Room vs Realm vs ObjectBox** - We needed a performant relational database that performed well with ReactiveExtensions. In the above combination, Room performs the best.
 * **Too many delegates?** - We have created a delegate each for sender name, message, attachment and the same for recievers. This is done to make use of the recycling capabilities of RecyclerView and to be able to easily add functionality to a particular item.
 * **Rx vs Coroutines** - Rx worked well for us to create a stream a data to be passed from our local storage, manipulate it and pass it to our UI.
+* **Adapter delegate vs Epoxy vs Groupie** - Adapter Delegates works with `ListAdapter` and performs diffing of our lists on a background thread giving us optimum performance.
 
 # To-do
 * Add test cases : Combination of UI and integration tests from [karntrehan/Starwars](https://github.com/karntrehan/Starwars) and [karntrehan/Posts](https://github.com/karntrehan/Posts/)
