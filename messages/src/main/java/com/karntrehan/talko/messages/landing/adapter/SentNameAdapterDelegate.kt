@@ -10,7 +10,7 @@ import com.karntrehan.talko.messages.landing.models.MessageModel
 import com.karntrehan.talko.messages.landing.models.SentName
 import kotlinx.android.extensions.LayoutContainer
 
-class SentNameAdapterDelegate() :
+class SentNameAdapterDelegate :
     AbsListItemAdapterDelegate<SentName, MessageModel, SentNameAdapterDelegate.ReceivedMessageVH>() {
 
     override fun isForViewType(

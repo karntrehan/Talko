@@ -11,7 +11,7 @@ import com.karntrehan.talko.messages.landing.models.ReceivedName
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_recieved_username.*
 
-class ReceivedNameAdapterDelegate() :
+class ReceivedNameAdapterDelegate :
     AbsListItemAdapterDelegate<ReceivedName, MessageModel, ReceivedNameAdapterDelegate.ReceivedMessageVH>() {
 
     override fun isForViewType(

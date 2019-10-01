@@ -6,6 +6,11 @@ A sample messaging UI app for Android writen in Kotlin with a working local pers
 
 Video demo can be seen [here](https://drive.google.com/file/d/11LWryPTnveaMwdqTQZu4HyY0GXpZHNf2/view?usp=sharing)
 
+# Running
+You will need a device with API 27+ to run the Instant app.
+
+![Running](run_config.png)
+
 # Architecture
 * MVVM with Observable pattern
 * A modular app with Instant Apps
@@ -16,15 +21,15 @@ Video demo can be seen [here](https://drive.google.com/file/d/11LWryPTnveaMwdqTQ
 * **Rx vs Coroutines** - Rx worked well for us to create a stream a data to be passed from our local storage, manipulate it and pass it to our UI.
 * **Adapter delegate vs Epoxy vs Groupie** - Adapter Delegates works with `ListAdapter` and performs diffing of our lists on a background thread giving us optimum performance.
 
-# To-do
-* Add test cases : Combination of UI and integration tests from [karntrehan/Starwars](https://github.com/karntrehan/Starwars) and [karntrehan/Posts](https://github.com/karntrehan/Posts/)
-
 # Contains
 * **[Dagger 2](https://dagger.dev/)**: Dependency injection
 * **[Reactive streams](https://github.com/ReactiveX/RxJava)**: Networking, Local persistance, Stream manipulation & Async.
 * **[LiveData and ViewModel](https://developer.android.com/topic/libraries/architecture)**: Isolate business logic and maintain state.
 * **[Room](https://developer.android.com/topic/libraries/architecture/room)**: Local persistance
 * **[Adapter Delegates](https://github.com/sockeqwe/AdapterDelegates)**: For easier multi-view `RecyclerView` with DiffUtils.
+
+# To-do
+* Add test cases : Combination of UI and integration tests from [karntrehan/Starwars](https://github.com/karntrehan/Starwars) and [karntrehan/Posts](https://github.com/karntrehan/Posts/)
 
 # Licence
     MIT License
