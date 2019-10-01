@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.karntrehan.talko.messages.db.MessagesDao
 import com.karntrehan.talko.messages.db.tables.User
 import com.karntrehan.talko.messages.landing.models.MessagesAndUsersJsonModel
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -36,8 +37,8 @@ class MessagesRepo(
             MessagesAndUsersJsonModel::class.java
         )
         prefs.edit().putBoolean(FIRST_LOAD, false).apply()
-        saveUsers(messagesAndUser, disposable)
-        saveNotifications(messagesAndUser, disposable)
+        saveUsers(messagesAndUser, disposable, subject)
+        saveNotifications(messagesAndUser, disposable, subject)
         saveAttachments(messagesAndUser, disposable, subject)
         return subject
     }
@@ -50,26 +51,32 @@ class MessagesRepo(
 
     override fun attachments(messageId: Int) = dao.attachments(messageId)
 
+    override fun deleteAttachment(attachmentId: String) = dao.deleteAttachment(attachmentId)
+
+    override fun deleteMessage(id: Int) = dao.deleteMessage(id)
+
     private fun saveUsers(
         messagesAndUser: MessagesAndUsersJsonModel,
-        disposable: CompositeDisposable
+        disposable: CompositeDisposable,
+        subject: PublishSubject<Boolean>
     ) {
         Maybe.just(messagesAndUser.users)
             .subscribeOn(Schedulers.single())
             .map { dao.insertUsers(it) }
-            .doOnError { Log.e(TAG, "User insertion failed", it) }
+            .doOnError { subject.onError(it) }
             .subscribe()
             .addTo(disposable)
     }
 
     private fun saveNotifications(
         messagesAndUser: MessagesAndUsersJsonModel,
-        disposable: CompositeDisposable
+        disposable: CompositeDisposable,
+        subject: PublishSubject<Boolean>
     ) {
         Maybe.just(messagesAndUser.messages)
             .subscribeOn(Schedulers.single())
             .map { dao.insertMessages(it) }
-            .doOnError { Log.e(TAG, "Messages insertion failed", it) }
+            .doOnError { subject.onError(it) }
             .subscribe()
             .addTo(disposable)
     }
@@ -81,7 +88,7 @@ class MessagesRepo(
     ) {
         Maybe.just(messagesAndUser.messages)
             .subscribeOn(Schedulers.single())
-            .doOnError { Log.e(TAG, "Attachment insertion failed", it) }
+            .doOnError { subject.onError(it) }
             .map {
                 it.forEach { message ->
                     message.attachments?.forEach { attachment ->

@@ -1,19 +1,28 @@
 package com.karntrehan.talko.messages.landing
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.karntrehan.talko.architecture.BaseFragment
-import com.karntrehan.talko.extensions.EndlessScrollListener
+import com.karntrehan.talko.utils.BottomMarginDecoration
+import com.karntrehan.talko.utils.EndlessScrollListener
 import com.karntrehan.talko.messages.R
 import com.karntrehan.talko.messages.di.MessagesDH
 import com.karntrehan.talko.messages.landing.adapter.MessagesAdapter
+import com.karntrehan.talko.messages.landing.models.ReceivedAttachment
+import com.karntrehan.talko.messages.landing.models.SentAttachment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.messages_fragment.*
 import javax.inject.Inject
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import com.karntrehan.talko.messages.landing.models.ReceivedMessage
+import com.karntrehan.talko.messages.landing.models.SentMessage
+
 
 class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
 
@@ -48,11 +57,12 @@ class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeMessages()
-
-        viewModel.messages()
-
+        srlMessages.isEnabled = false
+        rvMessages.addItemDecoration(BottomMarginDecoration())
         rvMessages.adapter = adapter
+
+        observeMessages()
+        viewModel.messages()
 
         endlessScrollListener = initEndlessScroll()
     }
@@ -85,6 +95,47 @@ class MessagesFragment : BaseFragment(), MessagesAdapter.MessagesInteraction {
 
     override fun showLoading() {
         srlMessages.isRefreshing = true
+    }
+
+    override fun attachmentDeleteTriggered(adapterPosition: Int, attachment: SentAttachment) {
+        attachmentDeleteTriggered(adapterPosition, attachment.id)
+    }
+
+    override fun attachmentDeleteTriggered(adapterPosition: Int, attachment: ReceivedAttachment) {
+        attachmentDeleteTriggered(adapterPosition, attachment.id)
+    }
+
+    private fun attachmentDeleteTriggered(position: Int, id: String) {
+        confirmDeletion(DialogInterface.OnClickListener { dialog, _ ->
+            dialog.dismiss()
+            viewModel.deleteAttachment(position, id)
+        })
+    }
+
+    override fun messageDeleteTriggered(adapterPosition: Int, message: ReceivedMessage) {
+        messageDeleteTriggered(adapterPosition, message.receivedMessageId)
+    }
+
+    override fun messageDeleteTriggered(adapterPosition: Int, message: SentMessage) {
+        messageDeleteTriggered(adapterPosition, message.messageId)
+    }
+
+    private fun messageDeleteTriggered(position: Int, id: Int) {
+        confirmDeletion(DialogInterface.OnClickListener { dialog, _ ->
+            dialog.dismiss()
+            viewModel.deleteMessage(position, id)
+        })
+    }
+
+    private fun confirmDeletion(listener: DialogInterface.OnClickListener) {
+        context?.let {
+            AlertDialog.Builder(ContextThemeWrapper(it, com.karntrehan.talko.R.style.AlertDialog))
+                .setTitle(getString(R.string.delete_entry))
+                .setPositiveButton(R.string.delete, listener)
+                .setNegativeButton(android.R.string.no, null)
+                .show()
+        }
+
     }
 
 }

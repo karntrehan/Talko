@@ -18,16 +18,19 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
 
     val TAG = "MessagesVM"
 
-    private val _messages = MutableLiveData<List<Any>>()
-    val messages: LiveData<List<Any>> by lazy { _messages }
+    private val _messages = MutableLiveData<List<MessageModel>>()
+    val messages: LiveData<List<MessageModel>> by lazy { _messages }
 
-    val currentUserId: Int by lazy { repo.currentUserId() }
+    private val currentUserId: Int by lazy { repo.currentUserId() }
 
     fun messages() {
         _loading.show()
         if (repo.isFirstLoad()) {
             repo.loadMessagesIntoMemory(disposable)
-                .subscribe { if (it) getLocalMessages() }
+                .subscribe(
+                    { if (it) getLocalMessages() },
+                    { handleError(it) }
+                )
                 .addTo(disposable)
             return
         }
@@ -42,32 +45,33 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
             .map { addUsersToMessages(it) }
+            .map { appendOrSetResults(it) }
             .subscribe({
                 _loading.hide()
-                Log.d(TAG, "getLocalMessages: $it")
+                //Log.d(TAG, "getLocalMessages: $it")
                 _messages.postValue(it)
             }, { handleError(it) })
             .addTo(disposable)
     }
 
-    private fun addUsersToMessages(messages: List<Message>): MutableList<Any> {
-        val result = mutableListOf<Any>()
+    private fun addUsersToMessages(messages: List<Message>): MutableList<MessageModel> {
+        val result = mutableListOf<MessageModel>()
         var prevUserId = -1
 
         messages.forEach { message ->
             if (message.userId == currentUserId) {
                 if (prevUserId != currentUserId)
-                    result.add(SentName())
-                result.add(SentMessage(message.content))
+                    result.add(SentName(currentUserId))
+                result.add(SentMessage(message.id, message.content))
                 addSelfAttachments(message.id, result)
             } else if (message.userId == prevUserId) {
-                result.add(ReceivedMessage(message.content))
+                result.add(ReceivedMessage(message.id, message.content))
                 addReceivedAttachments(message.id, result)
             } else {
                 repo.user(message.userId)?.let { currentUser ->
                     prevUserId = currentUser.id
-                    result.add(ReceivedName(currentUser.name))
-                    result.add(ReceivedMessage(message.content, currentUser.avatarId))
+                    result.add(ReceivedName(prevUserId, currentUser.name))
+                    result.add(ReceivedMessage(message.id, message.content, currentUser.avatarId))
                     addReceivedAttachments(message.id, result)
                 }
             }
@@ -76,22 +80,84 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
         return result
     }
 
-    private fun addSelfAttachments(messageId: Int, result: MutableList<Any>) {
+    private fun addSelfAttachments(messageId: Int, result: MutableList<MessageModel>) {
         repo.attachments(messageId)
-            ?.map { SentAttachment(it.thumbnailUrl, it.title) }
+            ?.map { SentAttachment(it.id, it.thumbnailUrl, it.title) }
             ?.let { result.addAll(it) }
     }
 
-    private fun addReceivedAttachments(messageId: Int, result: MutableList<Any>) {
+    private fun addReceivedAttachments(messageId: Int, result: MutableList<MessageModel>) {
         repo.attachments(messageId)
-            ?.map { ReceivedAttachment(it.thumbnailUrl, it.title) }
+            ?.map { ReceivedAttachment(it.id, it.thumbnailUrl, it.title) }
             ?.let { result.addAll(it) }
+    }
+
+    private fun appendOrSetResults(results: MutableList<MessageModel>): List<MessageModel> {
+
+        val combinedResult = mutableListOf<MessageModel>()
+
+        val currentData = _messages.value
+        if (currentData != null)
+            combinedResult.addAll(currentData)
+
+        combinedResult.addAll(results)
+
+        return combinedResult
     }
 
     fun loadNextMessages() {
-        Log.d(TAG, "loadNextMessages: ")
         offset += LIMIT
         getLocalMessages()
     }
 
+    fun deleteAttachment(position: Int, attachmentId: String) {
+        _loading.show()
+        repo.deleteAttachment(attachmentId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.computation())
+            .map {
+                val currentData = _messages.value?.map { it }?.toMutableList()
+                currentData?.removeAt(position)
+                return@map currentData ?: emptyList<MessageModel>()
+            }
+            .subscribe(
+                {
+                    _loading.hide()
+                    _messages.postValue(it)
+                }, { handleError(it) }
+            )
+            .addTo(disposable)
+    }
+
+    fun deleteMessage(position: Int, id: Int) {
+        _loading.show()
+        repo.deleteMessage(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.computation())
+            .map {
+                _messages.value?.map { it }?.toMutableList()?.let { currentData ->
+
+                    val removedMsg = currentData.removeAt(position)
+
+                    while (currentData[position] is SentAttachment || currentData[position] is ReceivedAttachment) {
+                        currentData.removeAt(position)
+                    }
+
+                    if (currentData[position] is SentName || currentData[position] is ReceivedName) {
+                        currentData.removeAt(position - 1)
+                    } else if (currentData[position] is ReceivedMessage && removedMsg is ReceivedMessage) {
+                        currentData[position] =
+                            (currentData[position] as ReceivedMessage).copy(avatarUrl = removedMsg.avatarUrl)
+                    }
+                    return@map currentData
+                } ?: emptyList<MessageModel>()
+            }
+            .subscribe(
+                {
+                    _loading.hide()
+                    _messages.postValue(it)
+                }, { handleError(it) }
+            )
+            .addTo(disposable)
+    }
 }

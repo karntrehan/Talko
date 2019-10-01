@@ -7,6 +7,8 @@ import androidx.room.Query
 import com.karntrehan.talko.messages.db.tables.Attachment
 import com.karntrehan.talko.messages.db.tables.Message
 import com.karntrehan.talko.messages.db.tables.User
+import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
@@ -31,4 +33,10 @@ interface MessagesDao {
 
     @Query("SELECT * FROM ATTACHMENTS WHERE message_id = :messageId")
     fun attachments(messageId: Int): List<Attachment>?
+
+    @Query("DELETE FROM ATTACHMENTS WHERE id = :attachmentId")
+    fun deleteAttachment(attachmentId: String): Maybe<Int>
+
+    @Query("DELETE FROM MESSAGES WHERE id = :messageId")
+    fun deleteMessage(messageId: Int): Maybe<Int>
 }

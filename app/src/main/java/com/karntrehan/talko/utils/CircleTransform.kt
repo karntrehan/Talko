@@ -1,4 +1,4 @@
-package com.karntrehan.talko.extensions
+package com.karntrehan.talko.utils
 
 import android.graphics.*
 import com.squareup.picasso.Transformation

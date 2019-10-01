@@ -3,4 +3,11 @@
     <color name="colorPrimary">#FFF</color>
     <color name="colorPrimaryDark">#FFF</color>
     <color name="colorAccent">#FFF</color>
+
+    <color name="orange">#ff6d00</color>
+
+    <color name="placeholder_color1">#FFF4E9</color>
+    <color name="placeholder_color2">#FEECE9</color>
+    <color name="placeholder_color3">#F1F4F5</color>
+    <color name="placeholder_color4">#FFEFD5</color>
 </resources>

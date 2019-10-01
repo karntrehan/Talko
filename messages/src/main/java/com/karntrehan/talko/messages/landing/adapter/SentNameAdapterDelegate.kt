@@ -6,14 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AbsListItemAdapterDelegate
 import com.karntrehan.talko.extensions.inflate
 import com.karntrehan.talko.messages.R
+import com.karntrehan.talko.messages.landing.models.MessageModel
 import com.karntrehan.talko.messages.landing.models.SentName
 import kotlinx.android.extensions.LayoutContainer
 
 class SentNameAdapterDelegate() :
-    AbsListItemAdapterDelegate<SentName, Any, SentNameAdapterDelegate.ReceivedMessageVH>() {
+    AbsListItemAdapterDelegate<SentName, MessageModel, SentNameAdapterDelegate.ReceivedMessageVH>() {
 
-    override fun isForViewType(item: Any, items: MutableList<Any>, position: Int) =
-        items[position] is SentName
+    override fun isForViewType(
+        item: MessageModel,
+        items: MutableList<MessageModel>,
+        position: Int
+    ) = items[position] is SentName
 
     override fun onCreateViewHolder(parent: ViewGroup) =
         ReceivedMessageVH(parent.inflate(R.layout.item_sent_username))

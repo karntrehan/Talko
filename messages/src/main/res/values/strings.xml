@@ -3,4 +3,8 @@
 
     <string name="sender_avatar">Sender Avatar</string>
     <string name="me">Me</string>
+    <string name="received_attachment">Received Message</string>
+    <string name="sent_attachment">Sent Message</string>
+    <string name="delete">Delete</string>
+    <string name="delete_entry">Delete entry?</string>
 </resources>

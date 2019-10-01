@@ -1,3 +1,7 @@
 package com.karntrehan.talko.messages.landing.models
 
-data class ReceivedAttachment(val thumbnailUrl: String?, val title: String?)
+data class ReceivedAttachment(
+    val receivedAttachmentId: String,
+    val thumbnailUrl: String?,
+    val title: String?
+) : MessageModel(receivedAttachmentId)

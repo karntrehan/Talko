@@ -1,3 +1,3 @@
 package com.karntrehan.talko.messages.landing.models
 
-class SentName()
+data class SentName(val userId: Int) : MessageModel(userId)

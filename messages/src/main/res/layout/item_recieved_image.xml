@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="56dp"
     android:layout_marginTop="4dp"
+    app:cardCornerRadius="4dp"
     app:contentPadding="0dp">
 
     <LinearLayout
@@ -15,10 +16,11 @@
 
         <ImageView
             android:id="@+id/ivImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="@string/sender_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/received_attachment"
+            android:minWidth="150dp"
+            android:minHeight="150dp"
             tools:background="@android:color/holo_orange_dark" />
 
         <TextView
@@ -32,7 +34,6 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="8dp"
-            android:textColor="@color/chat_back"
             android:textStyle="bold"
             tools:text="Boundary-Watter-" />
 
