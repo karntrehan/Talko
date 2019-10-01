@@ -2,7 +2,7 @@
 A sample messaging UI app for Android writen in Kotlin with a working local persistence layer.
 
 # Working
-![Working](app_flow.png =250x)
+![Working](app_flow.png)
 Video demo can be seen [here](https://drive.google.com/file/d/11LWryPTnveaMwdqTQZu4HyY0GXpZHNf2/view?usp=sharing)
 
 # Architecture
