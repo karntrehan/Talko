@@ -10,8 +10,6 @@ class MessagesAdapter(picasso: Picasso, interaction: MessagesInteraction) :
 
     init {
         delegatesManager.apply {
-
-            //Add new delegates here
             addDelegate(ReceivedMessageAdapterDelegate(picasso, interaction))
             addDelegate(ReceivedNameAdapterDelegate())
             addDelegate(ReceivedAttachmentAdapterDelegate(picasso, interaction))
@@ -19,8 +17,6 @@ class MessagesAdapter(picasso: Picasso, interaction: MessagesInteraction) :
             addDelegate(SentMessageAdapterDelegate(interaction))
             addDelegate(SentNameAdapterDelegate())
             addDelegate(SentAttachmentAdapterDelegate(picasso, interaction))
-
-            //fallbackDelegate = HomeFallbackAdapter()
         }
         setHasStableIds(true)
     }
@@ -48,18 +44,7 @@ class MessagesAdapter(picasso: Picasso, interaction: MessagesInteraction) :
         override fun areItemsTheSame(
             oldItem: MessageModel,
             newItem: MessageModel
-        ) = /*if (oldItem is ReceivedMessage && newItem is ReceivedMessage)
-            oldItem.avatarUrl == newItem.avatarUrl
-        else if (oldItem is ReceivedName && newItem is ReceivedName)
-            oldItem.name == newItem.name
-        else if (oldItem is SentMessage && newItem is SentMessage)
-            oldItem.content == newItem.content
-        else if (oldItem is ReceivedAttachment && newItem is ReceivedAttachment)
-            oldItem.thumbnailUrl == newItem.thumbnailUrl
-        else if (oldItem is SentAttachment && newItem is SentAttachment)
-            oldItem.thumbnailUrl == newItem.thumbnailUrl
-        else false*/
-            oldItem.id == newItem.id
+        ) = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
             oldItem: MessageModel,
