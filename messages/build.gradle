@@ -31,4 +31,10 @@ dependencies {
     //DI
     kapt daggerDep.compiler
 
+    //testing
+    testImplementation testing.junit
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.roboelectric
+    testImplementation testing.aacTesting
+
 }

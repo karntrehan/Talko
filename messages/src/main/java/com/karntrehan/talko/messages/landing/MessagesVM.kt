@@ -61,29 +61,38 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
         var prevUserId = -1
 
         messages.forEach { message ->
-            if (message.userId == currentUserId) {
-                //This message is from current User
-                if (prevUserId != currentUserId)
-                //If this is first message from current user, add SentName element
-                    result.add(SentName(currentUserId))
-                //Add the current user's message
-                result.add(SentMessage(message.id, message.content))
-                //Add current user's attachments of this message
-                addSelfAttachments(message.id, result)
-            } else if (message.userId == prevUserId) {
-                //The message belongs to the previous, hence just add the msg
-                // and the related attachments
-                result.add(ReceivedMessage(message.id, message.content))
-                addReceivedAttachments(message.id, result)
-            } else {
-                //This is a new user, hence add the ReceivedName element along with msg
-                // and the related attachments
-                repo.user(message.userId)?.let { currentUser ->
-                    prevUserId = currentUser.id
-                    result.add(ReceivedName(prevUserId, currentUser.name))
-                    result.add(ReceivedMessage(message.id, message.content, currentUser.avatarId))
+            when (message.userId) {
+                currentUserId -> {
+                    //This message is from current User
+                    if (prevUserId != currentUserId)
+                    //If this is first message from current user, add SentName element
+                        result.add(SentName(currentUserId))
+                    //Add the current user's message
+                    result.add(SentMessage(message.id, message.content))
+                    //Add current user's attachments of this message
+                    addSelfAttachments(message.id, result)
+                }
+                prevUserId -> {
+                    //The message belongs to the previous, hence just add the msg
+                    //and the related attachments
+                    result.add(ReceivedMessage(message.id, message.content))
                     addReceivedAttachments(message.id, result)
                 }
+                else ->
+                    //This is a new user, hence add the ReceivedName element along with msg
+                    //and the related attachments
+                    repo.user(message.userId)?.let { currentUser ->
+                        prevUserId = currentUser.id
+                        result.add(ReceivedName(prevUserId, currentUser.name))
+                        result.add(
+                            ReceivedMessage(
+                                message.id,
+                                message.content,
+                                currentUser.avatarId
+                            )
+                        )
+                        addReceivedAttachments(message.id, result)
+                    }
             }
         }
 
@@ -146,8 +155,8 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
 
     fun deleteMessage(position: Int, id: Int) {
         _loading.show()
-        //Delete message from local source, as it is linked to attachments,
-        // those would also be "cascade deleted"
+        //Delete message from local source;
+        //as it is linked to attachments, those would also be "cascade deleted"
         repo.deleteMessage(id)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
@@ -164,6 +173,7 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
 
                     //If this was the only msg from the user, delete their name
                     if (currentData[position] is SentName || currentData[position] is ReceivedName) {
+                        //This will be true if the next item is the name of another user
                         currentData.removeAt(position - 1)
                     }
                     //The next msg is from the same user, add their avatar to their msg
