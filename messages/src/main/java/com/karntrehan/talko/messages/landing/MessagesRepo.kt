@@ -1,12 +1,10 @@
 package com.karntrehan.talko.messages.landing
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 import com.karntrehan.talko.messages.db.MessagesDao
 import com.karntrehan.talko.messages.db.tables.User
 import com.karntrehan.talko.messages.landing.models.MessagesAndUsersJsonModel
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -30,6 +28,8 @@ class MessagesRepo(
     override fun isFirstLoad() = prefs.getBoolean(FIRST_LOAD, true)
 
     override fun loadMessagesIntoMemory(disposable: CompositeDisposable): PublishSubject<Boolean> {
+        //This is where generally we would be doing a remote lookup,
+        // but for the case of this sample, we have an attached json into the apk
         val subject = PublishSubject.create<Boolean>()
 
         val messagesAndUser = gson.fromJson(

@@ -29,7 +29,7 @@ class MessagesVM(private val repo: MessagesContract.Repo) : BaseVM() {
 
         _loading.show()
         if (repo.isFirstLoad()) {
-            //Trigger repo to load data into rooom. Listen to it's status through a Subject.
+            //Trigger repo to load data into room. Listen to it's status through a Subject.
             repo.loadMessagesIntoMemory(disposable)
                 .subscribe(
                     { if (it) getLocalMessages() },
