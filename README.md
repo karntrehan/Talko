@@ -20,6 +20,7 @@ You will need a device with API 27+ to run the Instant app.
 * **Too many delegates?** - We have created a delegate each for sender name, message, attachment and the same for recievers. This is done to make use of the recycling capabilities of RecyclerView and to be able to easily add functionality to a particular item.
 * **Rx vs Coroutines** - Rx worked well for us to create a stream a data to be passed from our local storage, manipulate it and pass it to our UI.
 * **Adapter delegate vs Epoxy vs Groupie** - Adapter Delegates works with `ListAdapter` and performs diffing of our lists on a background thread giving us optimum performance.
+* **Why not use Jetpack's Pagination library?** - As the messages are supposed to be pulled out in a paginated manner, my first thought was to use the Pagination library with Room. This quickly became complex, as the library supports a single model from the Query. This would have led to a very complex query for Room. It would have still required some logic to be moved to the adapter to handle the receiver name element and deletion logic. Hence I decided to build my own pagination logic and keep majority of it in the viewmodel for easier testing. 
 
 # Contains
 * **[Dagger 2](https://dagger.dev/)**: Dependency injection
